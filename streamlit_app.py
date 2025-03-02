@@ -1,3 +1,30 @@
+#**********************************************
+# Distance Metrics Demo App
+# Version 1.1
+# 1st March 2025
+# Jamie Crossman-Smith
+# jamie@bloch.ai
+#**********************************************
+# This Python code creates a web-based application using Streamlit to demonstrate
+# various distance metrics in machine learning. The application uses a toy dataset,
+# "make_moons", which generates two interleaving crescent shapes.
+#
+# The code begins by importing the necessary libraries and setting up the dataset.
+# It then defines functions for different distance metrics:
+# - Euclidean Distance: the straight-line distance between points.
+# - Manhattan Distance: the sum of absolute differences along each dimension.
+# - Minkowski Distance: a generalisation that can be tuned between Manhattan and Euclidean.
+# - Cosine Distance: measures the angle between vectors.
+#
+# The application allows users to adjust hyperparameters such as the number of samples,
+# noise level, and the Minkowski power. Users can select a reference data point to compute
+# distances from, see the resulting distance matrix, and visualise the selected point along
+# with its nearest neighbour on a scatter plot.
+#
+# A link to the original article for further reading is provided:
+# https://blochai.medium.com/distance-metrics-in-machine-learning-without-the-maths-994392d3995b
+#**********************************************
+
 import streamlit as st
 import numpy as np
 import pandas as pd
@@ -12,7 +39,9 @@ st.title("Distance Metrics Demo with Make Moons")
 st.write("""
 Distance metrics might sound like an abstract technical concept, but they lie at the heart of many machine learning processes. They help an algorithm decide whether two pieces of data are close or far apart in terms of similarity.
 
-In this demo, we use the 'make_moons' dataset – a toy dataset that creates two interleaving crescent shapes – to show how different distance metrics (like Euclidean, Manhattan, Minkowski, and Cosine) measure the 'difference' between points. Think of it as a way to decide which data points are like friends at a dinner party!
+In this demo, we use the 'make_moons' dataset – a toy dataset that creates two interleaving crescent shapes – to show how different distance metrics (Euclidean, Manhattan, Minkowski, and Cosine) measure the 'difference' between points. Think of it as a way to decide which data points are like friends at a dinner party!
+
+For more in-depth reading, check out the original article [here](https://blochai.medium.com/distance-metrics-in-machine-learning-without-the-maths-994392d3995b).
 """)
 
 # -----------------------------------------------------------------------------
@@ -26,7 +55,7 @@ The 'make_moons' dataset is a synthetic, two-dimensional dataset that forms two 
 
 **Hyperparameters:**
 - **Number of Samples:** Controls how many data points are generated.
-- **Noise Level:** Adds randomness to the data. A higher noise level means the data points will be more spread out and less cleanly separated.
+- **Noise Level:** Adds randomness to the data. A higher noise level means the points will be more spread out and less clearly separated.
 """)
 
 # Distance Metric selection
@@ -36,13 +65,13 @@ metric = st.sidebar.selectbox("Select a distance metric:",
 # For Minkowski, let the user adjust the power parameter
 if metric == "Minkowski":
     minkowski_power = st.sidebar.slider("Minkowski Power", min_value=1.0, max_value=5.0, value=3.0, step=0.1,
-                                        help="This parameter controls the 'dial' between Manhattan (power=1) and Euclidean (power=2) behaviour, or even beyond.")
+                                        help="Adjusts the 'dial' between Manhattan (power=1) and Euclidean (power=2) behaviours, or even beyond.")
 else:
     minkowski_power = 3.0  # Default value (unused for other metrics)
 
 # Dataset hyperparameters
 n_samples = st.sidebar.slider("Number of Samples", 100, 1000, 200, step=50,
-                              help="Choose how many points to generate in the dataset.")
+                              help="Choose how many data points to generate in the dataset.")
 noise = st.sidebar.slider("Noise Level", 0.0, 0.5, 0.1, step=0.05,
                            help="Adjust the noise level to see how 'messy' the data becomes.")
 
@@ -108,11 +137,11 @@ elif metric == "Cosine":
     distance_func = cosine_distance
 
 # -----------------------------------------------------------------------------
-# User Selects a Point (by index) from the Dataset
+# User Selects a Data Point (by index) from the Dataset
 # -----------------------------------------------------------------------------
 st.sidebar.header("Select a Data Point")
 selected_index = st.sidebar.slider("Select a point index", 0, len(X)-1, 0,
-                                   help="This selects the reference point for which distances to all other points are calculated.")
+                                   help="Select the reference point for which distances to all other points are calculated.")
 selected_point = X[selected_index]
 st.write(f"### Distances from point {selected_index}: {selected_point}")
 st.write("""
@@ -127,7 +156,7 @@ df_distances = pd.DataFrame({"Index": range(len(X)), "Distance": distances})
 df_distances = df_distances.sort_values("Distance")
 
 st.write(f"### Nearest Neighbours using {metric} Distance")
-st.write("The table below shows the indices and distances of the points nearest to the selected point. Note: The first row will be the point itself (distance 0), so the next row shows its closest 'neighbour'.")
+st.write("The table below shows the indices and distances of the points nearest to the selected point. Note: The first row is the point itself (distance 0), so the next row shows its closest neighbour.")
 st.dataframe(df_distances.head(10))
 
 # -----------------------------------------------------------------------------
@@ -154,20 +183,46 @@ In the plot above:
 """)
 
 # -----------------------------------------------------------------------------
-# Final Explanations
+# Final Explanations and Recap
 # -----------------------------------------------------------------------------
 st.write("""
 **Recap:**  
-- *Make Moons* is a synthetic dataset that creates two crescent-shaped clusters.  
-- **Hyperparameters**:  
-  - **Number of Samples**: How many data points are generated.  
-  - **Noise Level**: How much randomness (or 'mess') is added to the data.
-- **Distance Metrics**:  
-  - **Euclidean**: Straight-line distance.
-  - **Manhattan**: Distance along grid-like paths.
-  - **Minkowski**: A generalisation that lets you dial between Manhattan and Euclidean.
-  - **Cosine**: Measures the angle between points (useful when magnitude isn’t as important as direction).
+- *Make Moons* is a synthetic dataset that creates two interleaving crescent-shaped clusters.  
+- **Hyperparameters:**  
+  - **Number of Samples:** How many data points are generated.  
+  - **Noise Level:** How much randomness is added, making the clusters more or less distinct.
+- **Distance Metrics:**  
+  - **Euclidean:** The straight-line distance.  
+  - **Manhattan:** The distance along grid-like paths.  
+  - **Minkowski:** A generalisation with an adjustable power parameter to blend between Manhattan and Euclidean.  
+  - **Cosine:** Measures the angle between points, useful when direction is more important than magnitude.
 
 Experiment with the controls in the sidebar to see how the distances and nearest neighbours change. This interactive demo shows you how different ways of measuring 'difference' can lead to very different interpretations of your data.
 """)
+
+# -----------------------------------------------------------------------------
+# Footer
+# -----------------------------------------------------------------------------
+footer = st.container()
+footer.markdown(
+    '''
+    <style>
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: black;
+        color: white;
+        text-align: center;
+        padding: 10px 0;
+    }
+    </style>
+    <div class="footer">
+        <p>© 2025 Bloch AI LTD - All Rights Reserved. <a href="https://www.bloch.ai" style="color: white;">www.bloch.ai</a></p>
+    </div>
+    ''',
+    unsafe_allow_html=True
+)
+
 
