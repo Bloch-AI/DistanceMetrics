@@ -183,6 +183,66 @@ In the plot above:
 """)
 
 # -----------------------------------------------------------------------------
+# Worked Calculation Examples for the Selected Distance Metric
+# -----------------------------------------------------------------------------
+with st.expander("Show Worked Calculation for " + metric + " Distance"):
+    if metric == "Euclidean":
+        x_diff = selected_point[0] - nearest_point[0]
+        y_diff = selected_point[1] - nearest_point[1]
+        squared_sum = x_diff**2 + y_diff**2
+        calculated_distance = math.sqrt(squared_sum)
+        st.write("**Euclidean Distance Calculation**")
+        st.write(f"Selected point: {selected_point}")
+        st.write(f"Nearest neighbour: {nearest_point}")
+        st.write("Calculation steps:")
+        st.write(f"1. Difference in x: {selected_point[0]:.2f} - {nearest_point[0]:.2f} = {x_diff:.2f}")
+        st.write(f"2. Difference in y: {selected_point[1]:.2f} - {nearest_point[1]:.2f} = {y_diff:.2f}")
+        st.write(f"3. Squaring differences: ({x_diff:.2f})² + ({y_diff:.2f})² = {x_diff**2:.2f} + {y_diff**2:.2f} = {squared_sum:.2f}")
+        st.write(f"4. Euclidean Distance = √({squared_sum:.2f}) = {calculated_distance:.2f}")
+    elif metric == "Manhattan":
+        x_diff = abs(selected_point[0] - nearest_point[0])
+        y_diff = abs(selected_point[1] - nearest_point[1])
+        calculated_distance = x_diff + y_diff
+        st.write("**Manhattan Distance Calculation**")
+        st.write(f"Selected point: {selected_point}")
+        st.write(f"Nearest neighbour: {nearest_point}")
+        st.write("Calculation steps:")
+        st.write(f"1. Absolute difference in x: |{selected_point[0]:.2f} - {nearest_point[0]:.2f}| = {x_diff:.2f}")
+        st.write(f"2. Absolute difference in y: |{selected_point[1]:.2f} - {nearest_point[1]:.2f}| = {y_diff:.2f}")
+        st.write(f"3. Manhattan Distance = {x_diff:.2f} + {y_diff:.2f} = {calculated_distance:.2f}")
+    elif metric == "Minkowski":
+        p = minkowski_power
+        x_diff = abs(selected_point[0] - nearest_point[0])
+        y_diff = abs(selected_point[1] - nearest_point[1])
+        x_term = x_diff**p
+        y_term = y_diff**p
+        summed = x_term + y_term
+        calculated_distance = summed**(1.0/p)
+        st.write(f"**Minkowski Distance Calculation (p = {p})**")
+        st.write(f"Selected point: {selected_point}")
+        st.write(f"Nearest neighbour: {nearest_point}")
+        st.write("Calculation steps:")
+        st.write(f"1. Calculate |x difference|^p: |{selected_point[0]:.2f} - {nearest_point[0]:.2f}|^{p} = {x_diff:.2f}^{p} = {x_term:.2f}")
+        st.write(f"2. Calculate |y difference|^p: |{selected_point[1]:.2f} - {nearest_point[1]:.2f}|^{p} = {y_diff:.2f}^{p} = {y_term:.2f}")
+        st.write(f"3. Sum: {x_term:.2f} + {y_term:.2f} = {summed:.2f}")
+        st.write(f"4. Minkowski Distance = ({summed:.2f})^(1/{p}) = {calculated_distance:.2f}")
+    elif metric == "Cosine":
+        dot = selected_point[0]*nearest_point[0] + selected_point[1]*nearest_point[1]
+        mag1 = math.sqrt(selected_point[0]**2 + selected_point[1]**2)
+        mag2 = math.sqrt(nearest_point[0]**2 + nearest_point[1]**2)
+        cos_sim = dot / (mag1 * mag2) if (mag1 * mag2) != 0 else 0
+        calculated_distance = 1 - cos_sim
+        st.write("**Cosine Distance Calculation**")
+        st.write(f"Selected point: {selected_point}")
+        st.write(f"Nearest neighbour: {nearest_point}")
+        st.write("Calculation steps:")
+        st.write(f"1. Dot product: ({selected_point[0]:.2f} * {nearest_point[0]:.2f}) + ({selected_point[1]:.2f} * {nearest_point[1]:.2f}) = {dot:.2f}")
+        st.write(f"2. Magnitude of selected point: √({selected_point[0]:.2f}² + {selected_point[1]:.2f}²) = {mag1:.2f}")
+        st.write(f"3. Magnitude of nearest neighbour: √({nearest_point[0]:.2f}² + {nearest_point[1]:.2f}² = {mag2:.2f})")
+        st.write(f"4. Cosine Similarity = {dot:.2f} / ({mag1:.2f} * {mag2:.2f}) = {cos_sim:.2f}")
+        st.write(f"5. Cosine Distance = 1 - {cos_sim:.2f} = {calculated_distance:.2f}")
+
+# -----------------------------------------------------------------------------
 # Final Explanations and Recap
 # -----------------------------------------------------------------------------
 st.write("""
